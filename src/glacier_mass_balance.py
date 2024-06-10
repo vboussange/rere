@@ -44,46 +44,52 @@ def lapse(T, dz, lapse_rate):
     return T + dz * lapse_rate
 
 
-def total_point_balance(dt, Ts, Ps, melt_factor, T_threshold):
+def net_balance_fn(dt, Ts, Ps, melt_factor, T_threshold):
     """
-    Calculate the total point balance over time for given temperature and precipitation arrays.
-    
+    Integrate the balance rate (this is at a point) over time for given temperature and precipitation arrays to get the "net balance".
+
     Args:
-        dt (float): The time step.
-        Ts (array-like): Array of temperatures.
-        Ps (array-like): Array of precipitations.
-        melt_factor (float): The factor to compute melt amount.
-        T_threshold (float): The temperature threshold for accumulation.
-    
+        dt: The time step.
+        Ts: Array of temperatures.
+        Ps: Array of precipitations.
+        melt_factor: The factor to compute melt amount.
+        T_threshold: The temperature threshold for accumulation.
+
     Returns:
-        float: The total point balance.
+        net balance (this is at a point)
     """
-    assert len(Ts) == len(Ps), "Length of temperature and precipitation arrays must be equal."
+    assert len(Ts) == len(Ps)
     total = 0.0
     for T, P in zip(Ts, Ps):
-        total -= melt(T, melt_factor) * dt
-        total += accumulate(T, P, T_threshold) * dt
+        balance_rate = -melt(T, melt_factor) + accumulate(T, P, T_threshold)
+        total += balance_rate * dt
     return total
 
 
-def total_glacier_balance(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate):
+def glacier_net_balance_fn(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate):
     """
-    Calculate the total glacier balance over time and elevation.
-    
+    Calculate:
+    - the glacier net balance (integration of balance rate over time and space)
+    - the net balance at each point (integration of balance rate over time)
+
     Args:
-        zs (array-like): Array of elevations.
-        dt (float): The time step.
-        Ts (array-like): Array of temperatures.
-        Ps (array-like): Array of precipitations.
-        melt_factor (float): The factor to compute melt amount.
-        T_threshold (float): The temperature threshold for accumulation.
-        lapse_rate (float): The lapse rate (temperature change per unit elevation change).
-    
+        zs: Array of elevations (with the weather station as datum)
+        dt: The time step.
+        Ts: Array of temperatures.
+        Ps: Array of precipitations.
+        melt_factor: The factor to compute melt amount.
+        T_threshold: The temperature threshold for accumulation.
+        lapse_rate: The lapse rate (temperature change per unit elevation change).
+
     Returns:
-        float: The total glacier balance.
+        the glacier net balance [m]
+        net balance at all points [m]
     """
-    total = 0.0
-    for z in zs:
-        adjusted_Ts = [lapse(T, z, lapse_rate) for T in Ts]
-        total += total_point_balance(dt, adjusted_Ts, Ps, melt_factor, T_threshold)
-    return total
+    glacier_net_balance = 0.0
+    net_balance = np.zeros(len(zs))
+    for i, z in enumerate(zs):
+        TT = [lapse(T, z, lapse_rate) for T in Ts]
+        net_balance[i] = net_balance_fn(dt, TT, Ps, melt_factor, T_threshold)
+        glacier_net_balance += net_balance[i]
+    return glacier_net_balance / len(zs), net_balance
+

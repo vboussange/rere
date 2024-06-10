@@ -8,7 +8,8 @@ dependencies:
   - pip
   - numpy
   - matplotlib
+  - seaborn
   - ipykernel # for interactive notebooks
   - pathlib
-  # - zipfile
-  # - shutil
+  - xarray
+  - rioxarray

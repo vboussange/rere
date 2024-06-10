@@ -1,6 +1,7 @@
 import os
 import git
 import requests
+from zipfile import ZipFile
 
 def make_sha_filename(basename, ext):
     """
@@ -47,3 +48,18 @@ def download_file(url, dir_path, filename, force_download=False):
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
     return dirfile
+
+def unzip_one_file(zipfile, filename, destination_file):
+    """
+    Unzip one file from a zip-archive.
+
+    Args:
+        zipfile (str): Path to the zip file.
+        filename (str): Name of the file within the zip-archive to unzip, including any paths.
+        destination_file (str): Path and file where to place the extracted file.
+    """
+    os.makedirs(os.path.dirname(destination_file), exist_ok=True)
+
+    with ZipFile(zipfile, 'r') as z:
+        with z.open(filename) as source, open(destination_file, 'wb') as target:
+            target.write(source.read())
