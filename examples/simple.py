@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from src.glacier_mass_balance import melt, net_balance_fn, glacier_net_balance_fn, lapse
 from src.utils import make_sha_filename
+from pathlib import Path
 
 # Define synthetic functions
 
@@ -54,8 +55,8 @@ plt.figure()
 plt.plot(t, synthetic_T(t))
 plt.xlabel("time (d)")
 plt.ylabel("T (°C)")
-results_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../results"))
-os.makedirs(results_dir, exist_ok=True)
+results_dir = Path(__file__).resolve().parent.parent / "results"
+results_dir.mkdir(parents=True, exist_ok=True)
 plt.savefig(make_sha_filename(os.path.join(results_dir, "synthetic_T"), ".png"))
 
 # Run the model for one year at a point
@@ -68,8 +69,11 @@ net_balance_fn(dt, Ts_ele, Ps, melt_factor, T_threshold)
 xs, zs = synthetic_glacier()
 Ts = synthetic_T(t)
 glacier_net_balance, net_balance = glacier_net_balance_fn(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate)
+plt.figure()
 plt.plot(xs, net_balance)
-plt.savefig(make_sha_filename(results_dir / "synthetic_massbalance_field.png"))
+plt.xlabel("position")
+plt.ylabel("net balance")
+plt.savefig(make_sha_filename(results_dir / "synthetic_massbalance_field", ".png"))
 
 # Generate output table
 output_data = []

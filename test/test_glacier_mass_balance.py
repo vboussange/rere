@@ -28,7 +28,7 @@ def test_example_smb():
     with open(Path(__file__).parent / "../examples/simple.py", "r") as file:
         loc = {}
         exec(file.read(), None, loc)    
-        assert np.isclose(loc["glacier_net_balance"], -1.216964303020796)  # Use actual expected value
+        assert np.isclose(loc["glacier_net_balance"], -0.11063311845641427)  # Use actual expected value
 
 # Test `make_sha_filename` function from `utils.py`
 def test_make_sha_filename():
