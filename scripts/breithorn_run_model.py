@@ -57,7 +57,10 @@ def generate_output_table(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate, 
     pd.DataFrame(output_data, columns=["Temperature Offset", "Mass Balance"]).to_csv(output_csv_path, index=False)
 
 if __name__ == "__main__":
-    from breithorn_model_paras import PARAMS
+    PARAMS = {"lapse_rate": -0.6/100,
+                "melt_factor": 0.005,
+                "T_threshold": 4}
+    
     results_dir = "../results/"
     
     # Define file paths and constants
