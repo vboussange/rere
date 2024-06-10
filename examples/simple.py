@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from src.glacier_mass_balance import melt, total_point_balance, total_glacier_balance, lapse
+from src.glacier_mass_balance import melt, net_balance_fn, glacier_net_balance_fn, lapse
 from src.utils import make_sha_filename
 
 # Define synthetic functions
@@ -32,14 +32,15 @@ def synthetic_P(t):
 
 def synthetic_glacier():
     """
-    Generate synthetic glacier elevation.
+    Generate synthetic glacier elevation. Note this is a 1D glacier!
     
     Returns:
+        np.ndarray: Array of x-locations
         np.ndarray: Array of elevations.
     """
     x = np.arange(0, 5500, 500)
     elevation = x * 0.2 + 1400
-    return elevation
+    return x, elevation
 
 # Constants
 lapse_rate = -0.6 / 100
@@ -61,21 +62,21 @@ plt.savefig(make_sha_filename(os.path.join(results_dir, "synthetic_T"), ".png"))
 ele = 1500
 Ts_ele = lapse(synthetic_T(t), ele, lapse_rate)
 Ps = synthetic_P(t)
-point_balance = total_point_balance(dt, Ts_ele, Ps, melt_factor, T_threshold)
-print(f"Total point balance at elevation {ele} m: {point_balance}")
+net_balance_fn(dt, Ts_ele, Ps, melt_factor, T_threshold)
 
 # Run the model for one year for the whole glacier
-zs = synthetic_glacier()
+xs, zs = synthetic_glacier()
 Ts = synthetic_T(t)
-smb = total_glacier_balance(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate)
-print(f"Total glacier balance: {smb}")
+glacier_net_balance, net_balance = glacier_net_balance_fn(zs, dt, Ts, Ps, melt_factor, T_threshold, lapse_rate)
+plt.plot(xs, net_balance)
+plt.savefig(make_sha_filename(results_dir / "synthetic_massbalance_field.png"))
 
 # Generate output table
 output_data = []
 for dT in range(-4, 5):
     Ts_offset = synthetic_T(t) + dT
-    smb_offset = total_glacier_balance(zs, dt, Ts_offset, Ps, melt_factor, T_threshold, lapse_rate)
-    output_data.append([dT, smb_offset])
+    glacier_net_balance_, _ = glacier_net_balance_fn(zs, dt, Ts_offset, Ps, melt_factor, T_threshold, lapse_rate)
+    output_data.append([dT, glacier_net_balance_])
 
 # Save output to CSV
 import csv
