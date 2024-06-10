@@ -13,3 +13,4 @@ dependencies:
   - pathlib
   - xarray
   - rioxarray
+  - pytest
