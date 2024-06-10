@@ -1,4 +1,4 @@
-[![.github/workflows/runtest.yml](https://github.com/vboussange/rere/actions/workflows/runtest.yml/badge.svg)](https://github.com/vboussange/rere/actions/workflows/runtest.yml)
+[![Tests](https://github.com/vboussange/rere/actions/workflows/runtest.yml/badge.svg)](https://github.com/vboussange/rere/actions/workflows/runtest.yml)
 
 ```
 rere/
