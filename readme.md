@@ -31,4 +31,16 @@ Data is located at https://raw.githubusercontent.com/mauro3/CORDS/master/data/wo
 - `mamba env create --prefix ./.env --file environment.yml --force`
 - `mamba activate ./.env`
 - `pip install -e .`
-- `python examples/simple.py`
+
+## Getting started
+Just check out and run `python examples/simple.py`
+
+## References
+```latex
+@article {CORDS2024,
+  author       = {Victor Boussange and Mauro Werder},
+  title        = {A Course On Reproducible research, Data pipelines and Scientific computing},
+  year         = {2024},
+  URL          = {https://github.com/mauro3/CORDS/},
+}
+```

@@ -1,3 +1,9 @@
+"""
+this if a very cool script making very cool things and other stuff looooggg texxxxtt hello
+
+"""
+
+
 import os
 import requests
 import zipfile
@@ -7,9 +13,15 @@ from src.utils import download_file, unzip_one_file
 
 def get_data():
     # Directory setup
-    results_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../results"))
-    data_own_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/own"))
-    data_foreign_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/foreign"))
+    results_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../../results")
+    )
+    data_own_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../../data/own")
+    )
+    data_foreign_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../../data/foreign")
+    )
 
     os.makedirs(data_own_dir, exist_ok=True)
     os.makedirs(data_foreign_dir, exist_ok=True)
@@ -26,7 +38,9 @@ def get_data():
     mask_zip_path = os.path.join(data_own_dir, "mask_breithorngletscher.zip")
     mask_fl = os.path.join(data_own_dir, "mask_breithorngletscher.asc")
     download_file(mask_zip_url, mask_zip_path)
-    unzip_one_file(mask_zip_path, "mask_breithorngletscher/mask_breithorngletscher.asc", mask_fl)
+    unzip_one_file(
+        mask_zip_path, "mask_breithorngletscher/mask_breithorngletscher.asc", mask_fl
+    )
 
     # Digital Elevation Model (DEM)
     dem_zip_url = "https://github.com/mauro3/CORDS/raw/master/data/workshop-reproducible-research/foreign/swisstopo_dhm200_cropped.zip"
@@ -40,6 +54,7 @@ def get_data():
     Ps0 = 0.005  # mean (and constant) precipitation rate [m/d]
 
     print("Data preparation complete.")
-    
+
+
 if __name__ == "__main__":
     get_data()
