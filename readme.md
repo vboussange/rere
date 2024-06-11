@@ -28,7 +28,7 @@ Data is located at https://raw.githubusercontent.com/mauro3/CORDS/master/data/wo
 
 ## Installation
 - first install `minimamba`
-- `mamba env create --prefix ./.env --file environment.yml --force`
+- `mamba env create --prefix ./.env --file environment.yml`
 - `mamba activate ./.env`
 - `pip install -e .`
 
